@@ -8,5 +8,4 @@ void customSettings () {
     while (true) {
         
     }
-    
 }

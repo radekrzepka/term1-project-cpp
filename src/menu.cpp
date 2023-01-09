@@ -17,7 +17,7 @@
 using namespace std;
 
 int activeOption = 0;
-string menuOptions[6] = {"Poczatkujacy (8x8, 10 min)", "Niestandardowy (16x16, 40 min)", "Zaawansowany (30x16, 99 min)", "Niestandardowy", "Zasady gry i instrukcja", "Ranking"};
+string menuOptions[6] = {"Poczatkujący (8x8, 10 min)", "Średni (16x16, 40 min)", "Zaawansowany (30x16, 99 min)", "Niestandardowy", "Zasady gry i instrukcja", "Ranking"};
 int numberOfOptions = sizeof(menuOptions)/sizeof(menuOptions[0]);
 
 void showMenu () {
@@ -30,6 +30,7 @@ void showMenu () {
         cout << i+1 << ". " << menuOptions[i] << endl;
         SetConsoleTextAttribute(hConsole, WHITE_CONSOLE_COLOR);
     }
+    printf("\e[?25l"); //printf("\e[?25h"); wlaczenie ponownie migania kursora
 }
 
 void menu () {

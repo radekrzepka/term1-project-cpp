@@ -14,6 +14,16 @@
 #define ESC 27
 #define ENTER '\r'
 
+#define EASY_BOARD_WIDTH 8
+#define EASY_BOARD_HEIGHT 8
+#define EASY_MINE_QUANTITY 10
+#define MEDIUM_BOARD_WIDTH 16
+#define MEDIUM_BOARD_HEIGHT 16
+#define MEDIUM_MINE_QUANTITY 40
+#define HARD_BOARD_WIDTH 30
+#define HARD_BOARD_HEIGHT 16
+#define HARD_MINE_QUANTITY 99
+
 using namespace std;
 
 int activeOption = 0;
@@ -30,7 +40,7 @@ void showMenu () {
         cout << i+1 << ". " << menuOptions[i] << endl;
         SetConsoleTextAttribute(hConsole, WHITE_CONSOLE_COLOR);
     }
-    printf("\e[?25l"); //printf("\e[?25h"); wlaczenie ponownie migania kursora
+    printf("\e[?25l"); 
 }
 
 void menu () {
@@ -42,18 +52,18 @@ void menu () {
         while(kbhit()) {
             key = getch();
 
-            if (key == UP_ARROW) activeOption++;
-            if (key == DOWN_ARROW) activeOption--;
+            if (key == UP_ARROW && activeOption != numberOfOptions - 1) activeOption++;
+            if (key == DOWN_ARROW && activeOption != 0) activeOption--;
             if (key == ENTER) {
                 switch (activeOption) {
                     case 0:
-                        game(8,8,10);
+                        game(EASY_BOARD_WIDTH,EASY_BOARD_HEIGHT,EASY_MINE_QUANTITY);
                     break;
                     case 1:
-                        game(16,16,40);
+                        game(MEDIUM_BOARD_WIDTH,MEDIUM_BOARD_HEIGHT,MEDIUM_MINE_QUANTITY);
                     break;
                     case 2:
-                        game(30,16,99);
+                        game(HARD_BOARD_WIDTH,HARD_BOARD_HEIGHT,HARD_MINE_QUANTITY);
                     break;
                     case 3:
                         customSettings();
@@ -66,8 +76,6 @@ void menu () {
                     break;
                 }
             }
-            if (activeOption == numberOfOptions) activeOption--;
-            if (activeOption == -1) activeOption++;
 
             if (key == UP_ARROW || key == DOWN_ARROW) {
                 system("cls");

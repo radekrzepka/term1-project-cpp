@@ -36,7 +36,7 @@ bool boardToBig (GameSettings gameSettings) {
 }
 
 bool tooManyBombs (GameSettings gameSettings) {
-    int maxBombsQuantity = (stoi(gameSettings.boardHeight) * stoi(gameSettings.boardWidth)) - 2;
+    int maxBombsQuantity = (stoi(gameSettings.boardHeight) * stoi(gameSettings.boardWidth)) / 2;
     if (stoi(gameSettings.minesQunatity) > maxBombsQuantity) return true;
     return false;
 }
@@ -49,7 +49,7 @@ bool validateData (GameSettings gameSettings) {
 string errorCode (GameSettings gameSettings) {
     if (!allNumbersInt(gameSettings)) return "Proszę wpisać same liczby";
     if (boardToBig(gameSettings)) return "Maksymalny rozmiar planszy to: " + to_string(MAX_BOARD_WIDTH) + " x " + to_string(MAX_BOARD_HEIGHT);
-    if (tooManyBombs(gameSettings)) return "Podaj odpowiednią ilość bomb";
+    if (tooManyBombs(gameSettings)) return "Podaj odpowiednią ilość bomb (maksymalnie (szerokość planszy x wysokość planszy) / 2)";
     return "";
 }
 

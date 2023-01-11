@@ -7,6 +7,10 @@
 
 #define GREEN_CONSOLE_COLOR 2
 #define WHITE_CONSOLE_COLOR 15
+#define BLUE_CONSOLE_COLOR 1
+#define RED_CONSOLE_COLOR 4
+#define PURPLE_CONSOLE_COLOR 5
+#define YELLOW_CONSOLE_COLOR 6
 
 #define UP_ARROW 72
 #define DOWN_ARROW 80
@@ -56,12 +60,28 @@ void printBoard (Field **board, int boardWidth, int boardHeight, MoveCords userM
             cout << " ";
 
             if(i == userMove.rowCords && j == userMove.colCords) {
-                SetConsoleTextAttribute(hConsole, GREEN_CONSOLE_COLOR);
+                SetConsoleTextAttribute(hConsole, YELLOW_CONSOLE_COLOR);
                 cout << "x";
                 SetConsoleTextAttribute(hConsole, WHITE_CONSOLE_COLOR);
             } else {
                 if (board[i][j].hasBomb) cout << "B";
-                else if (board[i][j].howManyBombsNear != 0) cout << board[i][j].howManyBombsNear;
+                else if (board[i][j].howManyBombsNear != 0) {
+                    switch(board[i][j].howManyBombsNear) {
+                        case 1:
+                            SetConsoleTextAttribute(hConsole, BLUE_CONSOLE_COLOR);
+                        break;
+                        case 2:
+                            SetConsoleTextAttribute(hConsole, GREEN_CONSOLE_COLOR);
+                        break;
+                        case 3:
+                            SetConsoleTextAttribute(hConsole, RED_CONSOLE_COLOR);
+                        break;
+                        default:
+                            SetConsoleTextAttribute(hConsole, PURPLE_CONSOLE_COLOR);                                             
+                    }
+                    cout << board[i][j].howManyBombsNear;
+                    SetConsoleTextAttribute(hConsole, WHITE_CONSOLE_COLOR);
+                }
                 else cout << "█";
             }
 

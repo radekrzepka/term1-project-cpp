@@ -1,3 +1,3 @@
 #pragma once
 
-void game (unsigned short int boardWidth, unsigned short int boardHeight, unsigned short int mineQuantity);
+void game (int boardWidth, int boardHeight, int mineQuantity);

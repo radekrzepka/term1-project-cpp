@@ -9,8 +9,8 @@
 
 #define GREEN_CONSOLE_COLOR 2
 #define WHITE_CONSOLE_COLOR 15
-#define UP_ARROW 80
-#define DOWN_ARROW 72
+#define UP_ARROW 72
+#define DOWN_ARROW 80
 #define ESC 27
 #define ENTER '\r'
 
@@ -46,14 +46,21 @@ void showMenu () {
 void menu () {
     system("cls");
     showMenu();
+    
     unsigned char key;
-
     do {
         while(kbhit()) {
             key = getch();
+            bool keyClicked = false;
 
-            if (key == UP_ARROW && activeOption != numberOfOptions - 1) activeOption++;
-            if (key == DOWN_ARROW && activeOption != 0) activeOption--;
+            if (key == UP_ARROW && activeOption != 0) {
+                activeOption--;
+                keyClicked = true;
+            }
+            if (key == DOWN_ARROW && activeOption != numberOfOptions - 1) {
+                activeOption++;
+                keyClicked = true;
+            }
             if (key == ENTER) {
                 switch (activeOption) {
                     case 0:
@@ -77,7 +84,7 @@ void menu () {
                 }
             }
 
-            if (key == UP_ARROW || key == DOWN_ARROW) {
+            if (keyClicked) {
                 system("cls");
                 showMenu();
             }

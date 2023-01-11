@@ -1,4 +1,5 @@
 #include <iostream>
+#include "customSettings.hpp"
 #include "game.hpp"
 
 #define MAX_BOARD_SIZE 50

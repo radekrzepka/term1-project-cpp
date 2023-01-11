@@ -1,6 +1,7 @@
 #include <iostream>
 #include <conio.h>
 #include "menu.hpp"
+#include "gameRules.hpp"
 
 #define ESC 27
 

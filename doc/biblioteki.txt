@@ -1,3 +1,5 @@
 #include <conio.h> getch() do obsługi klawiatury
 #include <windows.h> ustawienie polskich znaków w konsoli, zmiana koloru tekstu w konsoli
 #include <iostream> obsługa strumienia wyjścia i wejścia
+#include <fstream> możliwość odczytu z pliku i dodania do pliku (ranking)
+#include <vector>

@@ -9,6 +9,16 @@
 #define DOWN_ARROW 80
 #define RIGHT_ARROW 77
 #define LEFT_ARROW 75
+#define Q_KEY 113
+#define W_KEY 119
+#define LEFT_UP_BOX "╔"
+#define RIGHT_UP_BOX "╗"
+#define LEFT_DOWN_BOX "╚"
+#define RIGHT_DOWN_BOX "╝"
+#define LEFT_CONNECTING_BOX "╠"
+#define RIGHT_CONNECTING_BOX "╣"
+#define HORIZONTAL_BOX "═"
+#define VERTICAL_BOX "║"
 
 using namespace std;
 
@@ -30,17 +40,31 @@ void printBoard (Field **board, unsigned short int boardWidth, unsigned short in
     HANDLE hConsole;
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
+    cout << LEFT_UP_BOX;
+    for (int i = 0; i < boardWidth * 2 + 1; i++) cout << HORIZONTAL_BOX;
+    cout << RIGHT_UP_BOX << endl;
+
     for (int i = 0; i < boardHeight; i++) {
+        
         for (int j = 0; j < boardWidth; j++) {
+            if (j == 0) cout << VERTICAL_BOX;
+            cout << " ";
+
             if(i == userMove.rowCords && j == userMove.colCords) {
                 SetConsoleTextAttribute(hConsole, GREEN_CONSOLE_COLOR);
                 cout << "x";
                 SetConsoleTextAttribute(hConsole, WHITE_CONSOLE_COLOR);
-            } else cout << board[i][j].isRevaled;
-            cout << " ";
+            } else cout << "█";
+
+            if (j == boardWidth - 1) cout << " " << VERTICAL_BOX;
         }
-        cout << endl;
+
+        cout << endl << (i != boardHeight - 1 ? LEFT_CONNECTING_BOX : LEFT_DOWN_BOX);
+        for (int k = 0; k < boardWidth * 2 + 1; k++) cout << HORIZONTAL_BOX;
+        cout << (i != boardHeight - 1 ? RIGHT_CONNECTING_BOX : RIGHT_DOWN_BOX) << endl;
     }
+    
+    printf("\e[?25l"); 
 }
 
 void game (unsigned short int boardWidth, unsigned short int boardHeight, unsigned short int mineQuantity) {
@@ -55,7 +79,7 @@ void game (unsigned short int boardWidth, unsigned short int boardHeight, unsign
 
     printBoard(board,boardWidth,boardHeight,userMove);
 
-    unsigned char key;
+    char key;
     do {
         while(kbhit()) {
             key = getch();
@@ -82,6 +106,9 @@ void game (unsigned short int boardWidth, unsigned short int boardHeight, unsign
                 system("cls");
                 printBoard(board,boardWidth,boardHeight,userMove);
             }
+
+            if(key == Q_KEY) cout << "Q";
+            if(key == W_KEY) cout << "W";
         }
     } while (true);
 

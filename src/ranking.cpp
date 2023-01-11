@@ -18,12 +18,13 @@ struct RankingData {
 };
 
 void printRanking(vector<RankingData> ranking) {
+    cout << endl;
     switch(ranking[0].level) {
         case 1:
-            printBigString("Poziom początkujący");
+            printBigString("Poziom poczatkujacy");
         break;
         case 2:
-            printBigString("Poziom średni");
+            printBigString("Poziom sredni");
         break;
         case 3:
             printBigString("Poziom zaawansowany");
@@ -33,8 +34,12 @@ void printRanking(vector<RankingData> ranking) {
     for (int i = 0; i < ranking.size(); i++) {
         int minutes = ranking[i].time / 60;
         int seconds = ranking[i].time - (minutes * 60);
-        cout << i+1 << ". " << ranking[i].name << " " << minutes << ":" << seconds << endl;
+        cout << i+1 << ". " << ranking[i].name << " " << minutes << ":" << (seconds < 10 ? "0":"") << seconds << endl;
     }
+}
+
+bool compareTwoRecords(RankingData a, RankingData b) {
+    return a.time < b.time;
 }
 
 void ranking () {
@@ -89,16 +94,16 @@ void ranking () {
             }
         }
 
-        // sort(begginerScores.begin(), begginerScores.end());
-        // sort(intermediateScores.begin(), intermediateScores.end());
-        // sort(advancedScores.begin(), advancedScores.end());
+        sort(begginerScores.begin(), begginerScores.end(), compareTwoRecords);
+        sort(intermediateScores.begin(), intermediateScores.end(), compareTwoRecords);
+        sort(advancedScores.begin(), advancedScores.end(), compareTwoRecords);
 
         printRanking(begginerScores);
         printRanking(intermediateScores);
         printRanking(advancedScores);
     }
 
-    cout << endl << endl << "ESC - powrot do menu";
+    cout << endl << "ESC - powrot do menu";
 
     unsigned char key;
     do {

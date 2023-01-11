@@ -14,16 +14,6 @@
 #define ESC 27
 #define ENTER '\r'
 
-#define EASY_BOARD_WIDTH 8
-#define EASY_BOARD_HEIGHT 8
-#define EASY_MINE_QUANTITY 10
-#define MEDIUM_BOARD_WIDTH 16
-#define MEDIUM_BOARD_HEIGHT 16
-#define MEDIUM_MINE_QUANTITY 40
-#define HARD_BOARD_WIDTH 30
-#define HARD_BOARD_HEIGHT 16
-#define HARD_MINE_QUANTITY 99
-
 using namespace std;
 
 int activeOption = 0;
@@ -64,13 +54,13 @@ void menu () {
             if (key == ENTER) {
                 switch (activeOption) {
                     case 0:
-                        game(EASY_BOARD_WIDTH,EASY_BOARD_HEIGHT,EASY_MINE_QUANTITY);
+                        game(8,8,10);
                     break;
                     case 1:
-                        game(MEDIUM_BOARD_WIDTH,MEDIUM_BOARD_HEIGHT,MEDIUM_MINE_QUANTITY);
+                        game(16,16,40);
                     break;
                     case 2:
-                        game(HARD_BOARD_WIDTH,HARD_BOARD_HEIGHT,HARD_MINE_QUANTITY);
+                        game(30,16,99);
                     break;
                     case 3:
                         customSettings();

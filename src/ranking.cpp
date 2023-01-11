@@ -2,8 +2,10 @@
 #include <conio.h>
 #include <fstream>
 #include <vector>
+#include <algorithm>
 #include "menu.hpp"
 #include "ranking.hpp"
+#include "functions.hpp"
 
 #define ESC 27
 
@@ -15,6 +17,26 @@ struct RankingData {
     unsigned int level;
 };
 
+void printRanking(vector<RankingData> ranking) {
+    switch(ranking[0].level) {
+        case 1:
+            printBigString("Poziom początkujący");
+        break;
+        case 2:
+            printBigString("Poziom średni");
+        break;
+        case 3:
+            printBigString("Poziom zaawansowany");
+        break;
+    }
+
+    for (int i = 0; i < ranking.size(); i++) {
+        int minutes = ranking[i].time / 60;
+        int seconds = ranking[i].time - (minutes * 60);
+        cout << i+1 << ". " << ranking[i].name << " " << minutes << ":" << seconds << endl;
+    }
+}
+
 void ranking () {
     system("cls");
 
@@ -25,7 +47,7 @@ void ranking () {
     vector <RankingData> intermediateScores;
     vector <RankingData> advancedScores;
     
-    cout << "Ranking" << endl;
+    printBigString("Ranking");
 
     if (file.good()) {
         while(!file.eof()) {
@@ -46,35 +68,37 @@ void ranking () {
                     case 1:
                         record.time = stoi(text);
                     break;
-                    case 2:
-                        record.level = stoi(text);
-                    break;
                 }
 
                 wordNumber++;
                 line.erase(0, pos+space_delimiter.length());
             }
 
+            record.level = stoi(line);
+
             switch (record.level) {
-                case 0:
+                case 1:
                     begginerScores.push_back(record);
                 break;
-                case 1:
+                case 2:
                     intermediateScores.push_back(record);
                 break;
-                case 2:
+                case 3:
                     advancedScores.push_back(record);
                 break;
             }
         }
 
-        for (int i = 0; i < begginerScores.size(); i++) {
-            cout << i << endl;
-            cout << begginerScores[i].name << " " << begginerScores[i].time << " " << begginerScores[i].level << endl;
-        }
+        // sort(begginerScores.begin(), begginerScores.end());
+        // sort(intermediateScores.begin(), intermediateScores.end());
+        // sort(advancedScores.begin(), advancedScores.end());
+
+        printRanking(begginerScores);
+        printRanking(intermediateScores);
+        printRanking(advancedScores);
     }
 
-    cout << "ESC - powrot do menu";
+    cout << endl << endl << "ESC - powrot do menu";
 
     unsigned char key;
     do {

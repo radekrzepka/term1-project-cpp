@@ -3,3 +3,4 @@
 #include <iostream> obsługa strumienia wyjścia i wejścia
 #include <fstream> możliwość odczytu z pliku i dodania do pliku (ranking)
 #include <vector>
+#include <algorithm> sortowanie vectora

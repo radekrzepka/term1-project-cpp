@@ -1,3 +1,3 @@
-test 321 0
-fff 21 1
-ddd 22 2
+test 321 1
+fff 21 2
+ddd 22 3

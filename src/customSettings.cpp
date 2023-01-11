@@ -45,11 +45,13 @@ string errorCode (GameSettings gameSettings) {
     if (!allNumbersInt(gameSettings)) return "Proszę wpisać same liczby";
     if (boardToBig(gameSettings)) return "Maksymalny rozmiar planszy to: " + to_string(MAX_BOARD_SIZE) + " x " + to_string(MAX_BOARD_SIZE);
     if (tooManyBombs(gameSettings)) return "Podaj odpowiednią ilość bomb";
+    return "";
 }
 
 void customSettings () {
     system("cls");
     printf("\e[?25h");
+    cout << "Wprowadź niestandardowe ustawienia planszy" << endl;
     
     bool isDataVaild = false;
     GameSettings gameSettings;
@@ -65,6 +67,7 @@ void customSettings () {
         if(validateData(gameSettings)) isDataVaild = true;
         else {
             system("cls");
+            cout << "Wprowadź niestandardowe ustawienia planszy" << endl;
             cout << errorCode(gameSettings) << endl;
         }
 

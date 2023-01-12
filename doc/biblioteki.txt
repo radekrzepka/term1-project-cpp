@@ -5,3 +5,4 @@
 #include <vector>
 #include <algorithm> sortowanie vectora
 #include <ctime> #include <random> losowanie bomb
+#include <chrono> mierzenie czasu

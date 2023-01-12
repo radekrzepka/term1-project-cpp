@@ -104,6 +104,7 @@ void ranking () {
     }
 
     cout << endl << "ESC - powrot do menu";
+    printf("\e[?25l"); 
 
     unsigned char key;
     do {

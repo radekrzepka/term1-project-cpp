@@ -3,7 +3,13 @@
 #include <windows.h>
 #include <ctime>
 #include <random>
+#include <chrono>
+#include <fstream>
+
+#include "ranking.hpp"
+#include "menu.hpp"
 #include "game.hpp"
+#include "functions.hpp"
 
 #define GREEN_CONSOLE_COLOR 2
 #define WHITE_CONSOLE_COLOR 15
@@ -18,6 +24,7 @@
 #define LEFT_ARROW 75
 #define Q_KEY 113
 #define W_KEY 119
+#define ESC 27
 
 #define LEFT_UP_BOX "╔"
 #define RIGHT_UP_BOX "╗"
@@ -42,10 +49,12 @@ struct MoveCords {
     int colCords = 0;
 };
 
-void printBoard (Field **board, int boardWidth, int boardHeight, MoveCords userMove) {
+void printBoard (Field **board, int boardWidth, int boardHeight, MoveCords userMove, int howManyFlagged, int mineQuantity) {
     system("cls");
     HANDLE hConsole;
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    cout << "Oflagowano: " << howManyFlagged << "/" << mineQuantity << endl;
 
     cout << LEFT_UP_BOX;
     for (int i = 0; i < boardWidth * 2 + 1; i++) cout << HORIZONTAL_BOX;
@@ -79,7 +88,8 @@ void printBoard (Field **board, int boardWidth, int boardHeight, MoveCords userM
                         cout << board[i][j].howManyBombsNear;
                         SetConsoleTextAttribute(hConsole, WHITE_CONSOLE_COLOR);
                     } else cout << " ";
-                } else cout << "█";
+                } else if (board[i][j].isFlagged) cout << "F";
+                else cout << "█";
             }
             if (j == boardWidth - 1) cout << " " << VERTICAL_BOX;
         }
@@ -89,18 +99,8 @@ void printBoard (Field **board, int boardWidth, int boardHeight, MoveCords userM
         cout << (i != boardHeight - 1 ? RIGHT_CONNECTING_BOX : RIGHT_DOWN_BOX) << endl;
     }
 
-    printf("\e[?25l"); 
-}
-
-void printHelpingBoard (Field **board, int boardWidth, int boardHeight, MoveCords userMove) {
-    for (int i = 0; i < boardHeight; i++) {
-        for (int j = 0; j < boardWidth; j++) {
-            if (board[i][j].hasBomb) cout << "B ";
-            else if (board[i][j].howManyBombsNear != 0) cout << board[i][j].howManyBombsNear << " ";
-            else cout << "█ ";
-        }
-        cout << endl << endl;
-    }
+    printf("\e[?25l");
+    cout << endl << endl;
 }
 
 int generateRandomCord(int maxSize) {
@@ -177,16 +177,46 @@ void revealFields (Field **board, int boardWidth, int boardHeight, MoveCords use
     }
 }
 
+void flagField (Field **board, MoveCords userMove) {
+    if (board[userMove.rowCords][userMove.colCords].isFlagged) board[userMove.rowCords][userMove.colCords].isFlagged = false; 
+    else if (!board[userMove.rowCords][userMove.colCords].isRevaled && !board[userMove.rowCords][userMove.colCords].isFlagged) board[userMove.rowCords][userMove.colCords].isFlagged = true; 
+}
+
+int countFlags (Field **board, int boardWidth, int boardHeight) {
+    int howManyFlags = 0;
+    for (int i = 0; i < boardHeight; i++) {
+        for (int j = 0; j < boardWidth; j++ ) {
+            if(board[i][j].isFlagged) howManyFlags++;
+        }
+    }
+    return howManyFlags;
+}
+
+bool checkIfGameWon (Field **board, int boardWidth, int boardHeight, int mineQuantity, int howManyFlagged) {
+    bool gameWon = true;
+    for (int i = 0; i < boardHeight; i++) {
+        for (int j = 0; j < boardWidth; j++) {
+            if (board[i][j].hasBomb && !board[i][j].isFlagged) return false;
+        }
+    }
+    if (howManyFlagged == mineQuantity) return true;
+    return false;
+}
+
 void game (int boardWidth, int boardHeight, int mineQuantity) {
     Field **board = new Field*[boardHeight];
     MoveCords userMove;
-    bool firstReval = false;
+    bool firstReveal = false;
+    bool endGame = false;
+    bool gameWon = false;
+    int howManyFlagged = 0;
+    auto start = chrono::high_resolution_clock::now();
 
     for (int i = 0; i < boardHeight; i++) {
         board[i] = new Field[boardWidth];
     }
 
-    printBoard(board,boardWidth,boardHeight,userMove);
+    printBoard(board,boardWidth,boardHeight,userMove, howManyFlagged, mineQuantity);
 
     char key;
     do {
@@ -211,23 +241,99 @@ void game (int boardWidth, int boardHeight, int mineQuantity) {
                 keyClicked = true;
             }
 
-            if (keyClicked) printBoard(board,boardWidth,boardHeight,userMove);
+            if (keyClicked) printBoard(board,boardWidth,boardHeight,userMove,howManyFlagged,mineQuantity);
             
             if(key == Q_KEY) {
-                if(!firstReval) {
-                    firstReval = true;
+                if(!firstReveal) {
+                    firstReveal = true;
                     generateBomb(board, boardWidth, boardHeight, mineQuantity, userMove);
                     generateNumbers(board, boardWidth, boardHeight, mineQuantity);
-                    revealFields(board, boardWidth, boardHeight, userMove); 
-                    printBoard(board,boardWidth,boardHeight,userMove);
-                }
-            }
-            if(key == W_KEY) cout << "W";
+                } 
+                if (board[userMove.rowCords][userMove.colCords].hasBomb) endGame = true;
 
-            // printHelpingBoard(board,boardWidth,boardHeight,userMove);        
+                revealFields(board, boardWidth, boardHeight, userMove); 
+                printBoard(board,boardWidth,boardHeight,userMove, howManyFlagged,mineQuantity);
+            }
+            if(key == W_KEY) {
+                flagField(board, userMove);
+                howManyFlagged = countFlags(board, boardWidth, boardHeight);
+                if(checkIfGameWon(board, boardWidth, boardHeight, mineQuantity, howManyFlagged)) {
+                    endGame = true;
+                    gameWon = true;
+                }
+                printBoard(board,boardWidth,boardHeight,userMove, howManyFlagged,mineQuantity);
+            }
         }
-    } while (true);
+    } while (!endGame);
+
+    auto finish = std::chrono::high_resolution_clock::now();
+    chrono::duration<double> elapsed = finish - start;
+    int time = elapsed.count();
+
+    bool savedToRanking = false;
+
+    if (gameWon) {
+        bool customLevel = false;
+        printBigString("Gratulacje wygrales", 12);
+        cout << endl << endl << "Udało ci się wygrać na poziomie ";
+
+        if (boardWidth == 8 && boardHeight == 8 && mineQuantity == 10) cout << "początkującym";
+        else if (boardWidth == 8 && boardHeight == 8 && mineQuantity == 40) cout << "średnim";
+        else if (boardWidth == 30 && boardHeight == 16 && mineQuantity == 99) cout << "zaawansowanym";
+        else {
+            cout << "niestandardowym";
+            customLevel = true;
+        }
+
+        cout << endl << "Twój czas rozwiązywania to: " << time << " sekund";
+
+        if (!customLevel) {
+            string name,level;
+            bool correctName = false;
+            printf("\e[?25h");
+
+            while (!correctName) {
+                cout << endl << "Podaj swój nick, aby zapisać twój wynik do rankigu: ";
+                cin >> name;
+                if (name.length() >= 30) cout << "Twój nick może mieć maksymalnie 20 znaków długości";
+                else correctName = true;
+            }
+
+            if (boardWidth == 8 && boardHeight == 8 && mineQuantity == 10) level = "1";
+            else if (boardWidth == 8 && boardHeight == 8 && mineQuantity == 40) level = "2";
+            else if (boardWidth == 30 && boardHeight == 16 && mineQuantity == 99) level = "3";
+
+            string line = "\n" + name + " " + to_string(time) + " " + level;
+
+            ofstream file("ranking.txt", ios_base::app);
+            file << line;
+            file.close();
+
+            savedToRanking = true;
+        } else {
+            cout << endl << endl << "Naciśnij ESC aby wrócić do menu...";
+            unsigned char key;
+            do {
+                while(kbhit()) {
+                    key = getch();
+                }
+            } while (key != ESC);
+        }
+
+    } else {
+        printBigString("Przegrales", 12);
+        cout << endl << endl << "Naciśnij ESC aby wrócić do menu...";
+        unsigned char key;
+        do {
+            while(kbhit()) {
+                key = getch();
+            }
+        } while (key != ESC);
+    }
 
     for (int i = 0; i < boardHeight; i++) delete[] board[i];
     delete[] board;
+
+    if (savedToRanking) ranking();
+    else menu();
 }

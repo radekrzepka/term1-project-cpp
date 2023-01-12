@@ -37,7 +37,7 @@ bool boardToBig (GameSettings gameSettings) {
 
 bool tooManyBombs (GameSettings gameSettings) {
     int maxBombsQuantity = (stoi(gameSettings.boardHeight) * stoi(gameSettings.boardWidth)) / 2;
-    if (stoi(gameSettings.minesQunatity) > maxBombsQuantity) return true;
+    if (stoi(gameSettings.minesQunatity) > maxBombsQuantity || stoi(gameSettings.minesQunatity) == 0) return true;
     return false;
 }
 

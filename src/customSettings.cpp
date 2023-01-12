@@ -5,7 +5,9 @@
 #include "functions.hpp"
 
 #define MAX_BOARD_WIDTH 40
+#define MIN_BOARD_WIDTH 8
 #define MAX_BOARD_HEIGHT 18
+#define MIN_BOARD_HEIGHT 8
 #define RED_CONSOLE_COLOR 4
 #define WHITE_CONSOLE_COLOR 15
 
@@ -31,12 +33,12 @@ bool allNumbersInt (GameSettings gameSettings) {
 }
 
 bool boardToBig (GameSettings gameSettings) {
-    if (stoi(gameSettings.boardWidth) <= MAX_BOARD_WIDTH && stoi(gameSettings.boardHeight) <= MAX_BOARD_HEIGHT) return false;
+    if (stoi(gameSettings.boardWidth) <= MAX_BOARD_WIDTH && stoi(gameSettings.boardHeight) <= MAX_BOARD_HEIGHT && stoi(gameSettings.boardWidth) >= MIN_BOARD_WIDTH && stoi(gameSettings.boardHeight) >= MIN_BOARD_HEIGHT) return false;
     return true;
 }
 
 bool tooManyBombs (GameSettings gameSettings) {
-    int maxBombsQuantity = (stoi(gameSettings.boardHeight) * stoi(gameSettings.boardWidth)) / 2;
+    int maxBombsQuantity = (stoi(gameSettings.boardHeight) * stoi(gameSettings.boardWidth)) / 3;
     if (stoi(gameSettings.minesQunatity) > maxBombsQuantity || stoi(gameSettings.minesQunatity) == 0) return true;
     return false;
 }
@@ -48,8 +50,8 @@ bool validateData (GameSettings gameSettings) {
 
 string errorCode (GameSettings gameSettings) {
     if (!allNumbersInt(gameSettings)) return "Proszę wpisać same liczby";
-    if (boardToBig(gameSettings)) return "Maksymalny rozmiar planszy to: " + to_string(MAX_BOARD_WIDTH) + " x " + to_string(MAX_BOARD_HEIGHT);
-    if (tooManyBombs(gameSettings)) return "Podaj odpowiednią ilość bomb (maksymalnie (szerokość planszy x wysokość planszy) / 2)";
+    if (boardToBig(gameSettings)) return "Maksymalny rozmiar planszy to: " + to_string(MAX_BOARD_WIDTH) + " x " + to_string(MAX_BOARD_HEIGHT) + ", a minimalny: " + to_string(MIN_BOARD_WIDTH) + " x " + to_string(MIN_BOARD_HEIGHT);
+    if (tooManyBombs(gameSettings)) return "Podaj odpowiednią ilość bomb (maksymalnie (szerokość planszy x wysokość planszy) / 3, minimalnie 1)";
     return "";
 }
 

@@ -24,7 +24,17 @@ void showMenu () {
     HANDLE hConsole;
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
-    cout << "SAPER" << endl;
+    cout << R"(
+   _____                               
+  / ____|                              
+ | (___     __ _   _ __     ___   _ __ 
+  \___ \   / _` | | '_ \   / _ \ | '__|
+  ____) | | (_| | | |_) | |  __/ | |   
+ |_____/   \__,_| | .__/   \___| |_|   
+                  | |                  
+                  |_|                           
+    )" << endl;
+
     for (int i = 0; i < numberOfOptions; i++) {
         if (activeOption == i) SetConsoleTextAttribute(hConsole, GREEN_CONSOLE_COLOR);
         cout << i+1 << ". " << menuOptions[i] << endl;

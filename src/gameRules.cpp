@@ -24,7 +24,7 @@ void gameRules () {
     cout << "Na każdym z odkrytych pól napisana jest liczba min, " << endl;
     cout << "które bezpośrednio stykają sie z danym polem (od jeden do ośmiu; jeśli min jest zero to na polu nie ma wpisanej liczby)." << endl;
     cout << "Na każdym z odkrytych pól napisana jest liczba min." << endl;
-    cout << "Nalezy uzywać tych liczb by wydedukować gdzie schowane są miny." << endl;
+    cout << "Należy używać tych liczb by wydedukować gdzie schowane są miny." << endl;
     cout << "Każde pole można również oflagować, aby oznaczyć sobie gdzie może znajdować się potencjalnie mina." << endl;
     cout << "Gra jest wygrana, gdy gracz poprawnie oflaguję każdą znajdującą się na mapie bombę." << endl << endl;
 

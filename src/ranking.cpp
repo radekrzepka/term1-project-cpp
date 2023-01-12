@@ -52,7 +52,7 @@ void ranking () {
     vector <RankingData> intermediateScores;
     vector <RankingData> advancedScores;
     
-    printBigString("Ranking");
+    printBigString("Ranking", 16);
 
     if (file.good()) {
         while(!file.eof()) {

@@ -30,13 +30,11 @@
 
 using namespace std;
 
-enum class State {clicked, flagged, notClicked};
-
 struct Field {
-    State state = State::notClicked;
     int howManyBombsNear = 0;
 	bool hasBomb = false;
 	bool isRevaled = false;
+    bool isFlagged = false;
 };
 
 struct MoveCords {
@@ -54,7 +52,6 @@ void printBoard (Field **board, int boardWidth, int boardHeight, MoveCords userM
     cout << RIGHT_UP_BOX << endl;
 
     for (int i = 0; i < boardHeight; i++) {
-        
         for (int j = 0; j < boardWidth; j++) {
             if (j == 0) cout << VERTICAL_BOX;
             cout << " ";
@@ -64,27 +61,26 @@ void printBoard (Field **board, int boardWidth, int boardHeight, MoveCords userM
                 cout << "x";
                 SetConsoleTextAttribute(hConsole, WHITE_CONSOLE_COLOR);
             } else {
-                if (board[i][j].hasBomb) cout << "B";
-                else if (board[i][j].howManyBombsNear != 0) {
-                    switch(board[i][j].howManyBombsNear) {
-                        case 1:
-                            SetConsoleTextAttribute(hConsole, BLUE_CONSOLE_COLOR);
-                        break;
-                        case 2:
-                            SetConsoleTextAttribute(hConsole, GREEN_CONSOLE_COLOR);
-                        break;
-                        case 3:
-                            SetConsoleTextAttribute(hConsole, RED_CONSOLE_COLOR);
-                        break;
-                        default:
-                            SetConsoleTextAttribute(hConsole, PURPLE_CONSOLE_COLOR);                                             
-                    }
-                    cout << board[i][j].howManyBombsNear;
-                    SetConsoleTextAttribute(hConsole, WHITE_CONSOLE_COLOR);
-                }
-                else cout << "█";
+                if (board[i][j].isRevaled) {
+                    if (board[i][j].howManyBombsNear != 0) {
+                        switch(board[i][j].howManyBombsNear) {
+                            case 1:
+                                SetConsoleTextAttribute(hConsole, BLUE_CONSOLE_COLOR);
+                            break;
+                            case 2:
+                                SetConsoleTextAttribute(hConsole, GREEN_CONSOLE_COLOR);
+                            break;
+                            case 3:
+                                SetConsoleTextAttribute(hConsole, RED_CONSOLE_COLOR);
+                            break;
+                            default:
+                                SetConsoleTextAttribute(hConsole, PURPLE_CONSOLE_COLOR);                                             
+                        }
+                        cout << board[i][j].howManyBombsNear;
+                        SetConsoleTextAttribute(hConsole, WHITE_CONSOLE_COLOR);
+                    } else cout << " ";
+                } else cout << "█";
             }
-
             if (j == boardWidth - 1) cout << " " << VERTICAL_BOX;
         }
 
@@ -96,6 +92,17 @@ void printBoard (Field **board, int boardWidth, int boardHeight, MoveCords userM
     printf("\e[?25l"); 
 }
 
+void printHelpingBoard (Field **board, int boardWidth, int boardHeight, MoveCords userMove) {
+    for (int i = 0; i < boardHeight; i++) {
+        for (int j = 0; j < boardWidth; j++) {
+            if (board[i][j].hasBomb) cout << "B ";
+            else if (board[i][j].howManyBombsNear != 0) cout << board[i][j].howManyBombsNear << " ";
+            else cout << "█ ";
+        }
+        cout << endl << endl;
+    }
+}
+
 int generateRandomCord(int maxSize) {
 	random_device rd;
 	mt19937 generatorRandomCord(rd());
@@ -103,23 +110,31 @@ int generateRandomCord(int maxSize) {
 	return distributionRandomCord(generatorRandomCord);
 }
 
+bool correctCords (int rowCords, int colCords, int boardWidth, int boardHeight) {
+    if (rowCords >= 0 && rowCords < boardHeight && colCords >= 0 && colCords < boardWidth) return true;
+    else return false;
+}
+
 void generateBomb(Field **board, int boardWidth, int boardHeight, int mineQuantity, MoveCords firstMove) {
     int generatedBomb = 0;
+
     while (generatedBomb != mineQuantity) {
+        bool closeToFirstMove = false;
         MoveCords randomCords;
         randomCords.rowCords = generateRandomCord(boardHeight - 1);
         randomCords.colCords = generateRandomCord(boardWidth - 1);
 
-        if ((randomCords.rowCords != firstMove.rowCords) && (randomCords.colCords != firstMove.colCords) && !board[randomCords.rowCords][randomCords.colCords].hasBomb) {
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                if(correctCords(randomCords.rowCords + i,randomCords.colCords + j,boardWidth,boardHeight) && randomCords.rowCords + i == firstMove.rowCords && randomCords.colCords + j == firstMove.colCords) closeToFirstMove = true;
+            }
+        }
+
+        if (!closeToFirstMove && !board[randomCords.rowCords][randomCords.colCords].hasBomb) {
             board[randomCords.rowCords][randomCords.colCords].hasBomb = true;
             generatedBomb++;
         }
     }
-}
-
-bool correctCords (int rowCords, int colCords, int boardWidth, int boardHeight) {
-    if (rowCords >= 0 && rowCords < boardHeight && colCords >= 0 && colCords < boardWidth) return true;
-    else return false;
 }
 
 int countBombs(int rowCords, int colCords, Field** board, int boardWidth, int boardHeight) {
@@ -143,9 +158,26 @@ void generateNumbers(Field **board, int boardWidth, int boardHeight, int mineQua
     }
 }
 
+void revealFields (Field **board, int boardWidth, int boardHeight, MoveCords userMove) {
+    board[userMove.rowCords][userMove.colCords].isRevaled = true;
+
+    for (int i = -1; i <= 1; i++) {
+        for (int j = -1; j <= 1; j++) {
+            MoveCords newCord;
+            newCord.rowCords = userMove.rowCords + i;
+            newCord.colCords = userMove.colCords + j;
+            
+            if (correctCords(newCord.rowCords, newCord.colCords, boardWidth, boardHeight)) {
+                if (board[newCord.rowCords][newCord.colCords].howManyBombsNear == 0 && !board[newCord.rowCords][newCord.colCords].hasBomb && !board[newCord.rowCords][newCord.colCords].isRevaled) {
+                    revealFields(board, boardWidth, boardHeight, newCord); 
+                }
+                if (!board[newCord.rowCords][newCord.colCords].hasBomb) board[newCord.rowCords][newCord.colCords].isRevaled = true;
+            }
+        }
+    }
+}
+
 void game (int boardWidth, int boardHeight, int mineQuantity) {
-    system("cls");
-    
     Field **board = new Field*[boardHeight];
     MoveCords userMove;
     bool firstReval = false;
@@ -185,11 +217,14 @@ void game (int boardWidth, int boardHeight, int mineQuantity) {
                 if(!firstReval) {
                     firstReval = true;
                     generateBomb(board, boardWidth, boardHeight, mineQuantity, userMove);
-                    generateNumbers(board, boardWidth, boardHeight, mineQuantity);  
+                    generateNumbers(board, boardWidth, boardHeight, mineQuantity);
+                    revealFields(board, boardWidth, boardHeight, userMove); 
                     printBoard(board,boardWidth,boardHeight,userMove);
                 }
             }
             if(key == W_KEY) cout << "W";
+
+            // printHelpingBoard(board,boardWidth,boardHeight,userMove);        
         }
     } while (true);
 

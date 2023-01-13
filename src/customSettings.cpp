@@ -1,5 +1,6 @@
 #include <iostream>
 #include <windows.h>
+
 #include "customSettings.hpp"
 #include "game.hpp"
 #include "functions.hpp"

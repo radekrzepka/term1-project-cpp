@@ -3,6 +3,7 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
+
 #include "menu.hpp"
 #include "ranking.hpp"
 #include "functions.hpp"
@@ -18,7 +19,6 @@ struct RankingData {
 };
 
 void printRanking(vector<RankingData> ranking) {
-    cout << endl;
     switch(ranking[0].level) {
         case 1:
             printBigString("Poziom poczatkujacy");
@@ -52,7 +52,7 @@ void ranking () {
     vector <RankingData> intermediateScores;
     vector <RankingData> advancedScores;
     
-    printBigString("Ranking", 16);
+    printBigString("Ranking", 26);
 
     if (file.good()) {
         while(!file.eof()) {
@@ -103,7 +103,7 @@ void ranking () {
         printRanking(advancedScores);
     }
 
-    cout << endl << "ESC - powrot do menu";
+    cout << endl << "ESC - powrót do menu";
     printf("\e[?25l"); 
 
     unsigned char key;

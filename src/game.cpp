@@ -219,6 +219,7 @@ void game (int boardWidth, int boardHeight, int mineQuantity) {
     int howManyFlagged = 0;
     bool firstReveal = false;
     bool endGame = false;
+    bool gameEscaped = false;
     bool gameWon = false;
     bool customLevel = ((checkBoardLevel(boardWidth, boardHeight, mineQuantity) == "niestandardowym") ? true : false);
     string boardLevel = checkBoardLevel(boardWidth, boardHeight, mineQuantity);
@@ -270,6 +271,10 @@ void game (int boardWidth, int boardHeight, int mineQuantity) {
                 }
                 keyClicked = true;
             }
+            if(key == ESC) {
+                endGame = true;
+                gameEscaped = true;
+            }
             if (keyClicked) printBoard(board,boardWidth,boardHeight,userMove,howManyFlagged,mineQuantity);
         }
     } while (!endGame);
@@ -289,7 +294,7 @@ void game (int boardWidth, int boardHeight, int mineQuantity) {
             printf("\e[?25h");
 
             while (!correctName) {
-                cout << endl << "Podaj swój nick, aby zapisać twój wynik do rankigu: ";
+                cout << endl << "Podaj swój nick, aby zapisać twój wynik do rankigu (maksymalnie 20 znaków): ";
                 cin >> name;
                 if (name.length() >= 20) cout << "Twój nick może mieć maksymalnie 20 znaków długości";
                 else correctName = true;
@@ -314,7 +319,7 @@ void game (int boardWidth, int boardHeight, int mineQuantity) {
             } while (key != ESC);
         }
 
-    } else {
+    } else if (!gameEscaped) {
         printBigString("Przegrales", 12);
         cout << endl << endl << "Naciśnij ESC aby wrócić do menu...";
         unsigned char key;

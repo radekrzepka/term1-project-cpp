@@ -24,10 +24,9 @@ void gameRules () {
     cout << "Gra polega na odkrywaniu na planszy poszczególnych pól w taki sposób, aby nie natrafić na minę." << endl;
     cout << "Na każdym z odkrytych pól napisana jest liczba min, " << endl;
     cout << "które bezpośrednio stykają sie z danym polem (od jednej do ośmiu; jeśli min jest zero to na polu nie ma wpisanej liczby)." << endl;
-    cout << "Na każdym z odkrytych pól napisana jest liczba min." << endl;
-    cout << "Należy używać tych liczb, aby wydedukować gdzie schowane są miny." << endl;
+    cout << "Należy używać tych liczb, aby wydedukować gdzie znajdują się miny." << endl;
     cout << "Każde pole można również oflagować, aby oznaczyć sobie gdzie może znajdować się potencjalnie mina." << endl;
-    cout << "Gra jest wygrana, gdy gracz poprawnie oflaguję każdą znajdującą się na mapie bombę." << endl;
+    cout << "Gra jest wygrana, gdy gracz poprawnie oflaguję każdą znajdującą się na mapie bombę, nie oflagowując żadnego innego pola." << endl;
     cout << "Gra jest przegrana, gdy gracz odkryje minę." << endl << endl;
 
     printBigString("Instrukcja gry");

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <windows.h>
 
 #include "functions.hpp"
 
@@ -25,4 +26,11 @@ void printBigString (string text, int additionalSpace) {
     cout << LEFT_DOWN_BOX;
     for(int i = 0; i < text.length() + additionalSpace ; i++) cout << HORIZONTAL_BOX;
     cout << RIGHT_DOWN_BOX << endl;
+}
+
+void clearConsole () {
+    COORD cursorPosition;
+    cursorPosition.X = 0;
+    cursorPosition.Y = 0;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), cursorPosition);
 }

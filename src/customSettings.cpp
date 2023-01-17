@@ -57,11 +57,12 @@ string errorCode (GameSettings gameSettings) {
 }
 
 void customSettings () {
+    system("cls");
+    clearConsole();
+    printf("\e[?25h");
     HANDLE hConsole;
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
-    system("cls");
-    printf("\e[?25h");
     printBigString("Niestandardowe ustawienia gry");
     
     bool isDataVaild = false;

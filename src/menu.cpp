@@ -3,6 +3,7 @@
 #include <conio.h>
 
 #include "customSettings.hpp"
+#include "functions.hpp"
 #include "game.hpp"
 #include "gameRules.hpp"
 #include "menu.hpp"
@@ -18,7 +19,7 @@
 using namespace std;
 
 int activeOption = 0;
-string menuOptions[6] = {"Poczatkujący (8x8, 10 min)", "Średni (16x16, 40 min)", "Zaawansowany (30x16, 99 min)", "Niestandardowy", "Zasady gry i instrukcja", "Ranking"};
+string menuOptions[6] = {"Poczatkujący (8x8, 10 min)", "Średni (16x16, 40 min)", "Zaawansowany (30x16, 99 min)", "Niestandardowe ustawienia gry", "Zasady gry i instrukcja", "Ranking"};
 int numberOfOptions = sizeof(menuOptions)/sizeof(menuOptions[0]);
 
 void showMenu () {
@@ -26,14 +27,14 @@ void showMenu () {
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
     cout << R"(
-   _____                               
-  / ____|                              
- | (___     __ _   _ __     ___   _ __ 
-  \___ \   / _` | | '_ \   / _ \ | '__|
-  ____) | | (_| | | |_) | |  __/ | |   
- |_____/   \__,_| | .__/   \___| |_|   
-                  | |                  
-                  |_|                           
+   _____                           
+  / ____|                          
+ | (___    __ _  _ __    ___  _ __ 
+  \___ \  / _` || '_ \  / _ \| '__|
+  ____) || (_| || |_) ||  __/| |   
+ |_____/  \__,_|| .__/  \___||_|   
+                | |                
+                |_|                         
     )" << endl;
 
     for (int i = 0; i < numberOfOptions; i++) {
@@ -46,6 +47,7 @@ void showMenu () {
 
 void menu () {
     system("cls");
+    clearConsole();
     showMenu();
     
     unsigned char key;
@@ -86,7 +88,7 @@ void menu () {
             }
 
             if (keyClicked) {
-                system("cls");
+                clearConsole();
                 showMenu();
             }
         }

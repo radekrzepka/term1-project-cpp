@@ -36,6 +36,7 @@ void printRanking(vector<RankingData> ranking) {
         int seconds = ranking[i].time - (minutes * 60);
         cout << i+1 << ". " << ranking[i].name << " " << minutes << ":" << (seconds < 10 ? "0":"") << seconds << endl;
     }
+    cout << endl;
 }
 
 bool compareTwoRecords(RankingData a, RankingData b) {
@@ -44,6 +45,7 @@ bool compareTwoRecords(RankingData a, RankingData b) {
 
 void ranking () {
     system("cls");
+    clearConsole();
 
     ifstream file("ranking.txt");
     string line;

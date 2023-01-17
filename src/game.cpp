@@ -50,7 +50,7 @@ struct MoveCords {
 };
 
 void printBoard (Field **board, int boardWidth, int boardHeight, MoveCords userMove, int howManyFlagged, int mineQuantity) {
-    system("cls");
+    clearConsole();
     HANDLE hConsole;
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -212,6 +212,7 @@ string checkBoardLevel (int boardWidth, int boardHeight, int mineQuantity) {
 }
 
 void game (int boardWidth, int boardHeight, int mineQuantity) {
+    system("cls");
     Field **board = new Field*[boardHeight];
     MoveCords userMove;
     auto start = chrono::high_resolution_clock::now();

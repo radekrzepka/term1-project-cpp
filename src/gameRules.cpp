@@ -15,6 +15,7 @@ using namespace std;
 
 void gameRules () {
     system("cls");
+    clearConsole();
     HANDLE hConsole;
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 

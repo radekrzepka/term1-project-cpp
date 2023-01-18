@@ -12,6 +12,7 @@
 
 using namespace std;
 
+//function is responsible for print string in the box
 void printBigString (string text, int additionalSpace) {
     if(additionalSpace % 2 == 1) additionalSpace--;
 
@@ -28,6 +29,7 @@ void printBigString (string text, int additionalSpace) {
     cout << RIGHT_DOWN_BOX << endl;
 }
 
+//function set cursor to the beging of console
 void clearConsole () {
     COORD cursorPosition;
     cursorPosition.X = 0;

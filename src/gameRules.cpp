@@ -13,6 +13,7 @@
 
 using namespace std;
 
+//function is responsible for printing game rules
 void gameRules () {
     system("cls");
     clearConsole();

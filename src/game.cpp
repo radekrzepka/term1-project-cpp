@@ -49,6 +49,7 @@ struct MoveCords {
     int colCords = 0;
 };
 
+//function is responsible for printing the board
 void printBoard (Field **board, int boardWidth, int boardHeight, MoveCords userMove, int howManyFlagged, int mineQuantity) {
     clearConsole();
     HANDLE hConsole;
@@ -103,11 +104,13 @@ void printBoard (Field **board, int boardWidth, int boardHeight, MoveCords userM
     cout << endl << endl;
 }
 
+//function checks that the entered cords don't go outside the array
 bool correctCords (int rowCords, int colCords, int boardWidth, int boardHeight) {
     if (rowCords >= 0 && rowCords < boardHeight && colCords >= 0 && colCords < boardWidth) return true;
     else return false;
 }
 
+//function for genereting random Cord
 int generateRandomCord (int maxCord) {
 	random_device rd;
 	mt19937 generatorRandomCord(rd());
@@ -115,6 +118,7 @@ int generateRandomCord (int maxCord) {
 	return distributionRandomCord(generatorRandomCord);
 }
 
+//function which generete bombs on the board after first reveal
 void generateBomb (Field **board, int boardWidth, int boardHeight, int mineQuantity, MoveCords firstMove) {
     int generatedBomb = 0;
 
@@ -137,6 +141,7 @@ void generateBomb (Field **board, int boardWidth, int boardHeight, int mineQuant
     }
 }
 
+//function count how many bombs are across specific field
 int countBombsNextToField (int rowCords, int colCords, Field** board, int boardWidth, int boardHeight) {
     int bombsQuantity = 0;
     for (int i = -1; i <= 1; i++) {
@@ -147,6 +152,7 @@ int countBombsNextToField (int rowCords, int colCords, Field** board, int boardW
     return bombsQuantity;
 }
 
+//function generate number of bombs next to every field 
 void generateNumbers (Field **board, int boardWidth, int boardHeight, int mineQuantity) {
     for(int i = 0; i < boardHeight; i++) {
         for (int j = 0; j < boardWidth; j++) {
@@ -158,6 +164,7 @@ void generateNumbers (Field **board, int boardWidth, int boardHeight, int mineQu
     }
 }
 
+//function that uses recursion to reveal the relevant fields after the user clicks on a field where there is no bomb
 void revealFields (Field **board, int boardWidth, int boardHeight, MoveCords userMove) {
     if(board[userMove.rowCords][userMove.colCords].isRevaled) return;
     
@@ -179,11 +186,13 @@ void revealFields (Field **board, int boardWidth, int boardHeight, MoveCords use
     }
 }
 
+//function which is responsible for flag or unflag field
 void flagField (Field **board, MoveCords userMove) {
     if (board[userMove.rowCords][userMove.colCords].isFlagged) board[userMove.rowCords][userMove.colCords].isFlagged = false; 
     else if (!board[userMove.rowCords][userMove.colCords].isRevaled && !board[userMove.rowCords][userMove.colCords].isFlagged) board[userMove.rowCords][userMove.colCords].isFlagged = true; 
 }
 
+//function which count how many fields user has been flagged
 int countFlags (Field **board, int boardWidth, int boardHeight) {
     int howManyFlags = 0;
     for (int i = 0; i < boardHeight; i++) {
@@ -194,6 +203,7 @@ int countFlags (Field **board, int boardWidth, int boardHeight) {
     return howManyFlags;
 }
 
+//function checks if every bomb is flagged and number of flags is the same as number of bombs
 bool checkIfGameWon (Field **board, int boardWidth, int boardHeight, int mineQuantity, int howManyFlagged) {
     for (int i = 0; i < boardHeight; i++) {
         for (int j = 0; j < boardWidth; j++) {
@@ -204,32 +214,34 @@ bool checkIfGameWon (Field **board, int boardWidth, int boardHeight, int mineQua
     return false;
 }
 
+//function returns the level of the map
 string checkBoardLevel (int boardWidth, int boardHeight, int mineQuantity) {
     if (boardWidth == 8 && boardHeight == 8 && mineQuantity == 10) return "początkującym";
-    else if (boardWidth == 8 && boardHeight == 8 && mineQuantity == 40) return"średnim";
+    else if (boardWidth == 16 && boardHeight == 16 && mineQuantity == 40) return "średnim";
     else if (boardWidth == 30 && boardHeight == 16 && mineQuantity == 99) return "zaawansowanym";
     return "niestandardowym";
 }
 
 void game (int boardWidth, int boardHeight, int mineQuantity) {
     system("cls");
-    Field **board = new Field*[boardHeight];
     MoveCords userMove;
-    auto start = chrono::high_resolution_clock::now();
+    auto start = chrono::high_resolution_clock::now(); //use to measure game time
 
     int howManyFlagged = 0;
     bool firstReveal = false;
     bool endGame = false;
     bool gameEscaped = false;
     bool gameWon = false;
+    
     bool customLevel = ((checkBoardLevel(boardWidth, boardHeight, mineQuantity) == "niestandardowym") ? true : false);
     string boardLevel = checkBoardLevel(boardWidth, boardHeight, mineQuantity);
 
+    Field **board = new Field*[boardHeight];
     for (int i = 0; i < boardHeight; i++) {
         board[i] = new Field[boardWidth];
     }
 
-    printBoard(board,boardWidth,boardHeight,userMove, howManyFlagged, mineQuantity);
+    printBoard(board,boardWidth,boardHeight,userMove, howManyFlagged, mineQuantity); //first print of board
 
     char key;
     do {
@@ -254,7 +266,7 @@ void game (int boardWidth, int boardHeight, int mineQuantity) {
                 keyClicked = true;
             }            
             if(key == Q_KEY) {
-                if(!firstReveal) {
+                if(!firstReveal) { //bombs are generated after first click
                     firstReveal = true;
                     generateBomb(board, boardWidth, boardHeight, mineQuantity, userMove);
                     generateNumbers(board, boardWidth, boardHeight, mineQuantity);
@@ -289,6 +301,7 @@ void game (int boardWidth, int boardHeight, int mineQuantity) {
         cout << endl << endl << "Udało ci się wygrać na poziomie " << boardLevel << endl;
         cout << "Twój czas rozwiązywania to: " << time << " sekund";
 
+        //if level is not custom allows you to add the result to the ranking
         if (!customLevel) {
             string name,level;
             bool correctName = false;

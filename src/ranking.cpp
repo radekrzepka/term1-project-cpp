@@ -9,6 +9,7 @@
 #include "functions.hpp"
 
 #define ESC 27
+#define NUMBER_OF_LEVELS 3
 
 using namespace std;
 
@@ -18,7 +19,14 @@ struct RankingData {
     unsigned int level;
 };
 
+//function which allows sort function to sort data by struct parameter
+bool compareTwoRecords(RankingData a, RankingData b) {
+    return a.time < b.time;
+}
+
 void printRanking(vector<RankingData> ranking) {
+    sort(ranking.begin(), ranking.end(), compareTwoRecords);
+
     switch(ranking[0].level) {
         case 1:
             printBigString("Poziom poczatkujacy");
@@ -39,10 +47,6 @@ void printRanking(vector<RankingData> ranking) {
     cout << endl;
 }
 
-bool compareTwoRecords(RankingData a, RankingData b) {
-    return a.time < b.time;
-}
-
 void ranking () {
     system("cls");
     clearConsole();
@@ -50,9 +54,7 @@ void ranking () {
     ifstream file("ranking.txt");
     string line;
 
-    vector <RankingData> begginerScores;
-    vector <RankingData> intermediateScores;
-    vector <RankingData> advancedScores;
+    vector <RankingData> rankings[NUMBER_OF_LEVELS];
     
     printBigString("Ranking", 26);
 
@@ -82,27 +84,9 @@ void ranking () {
             }
 
             record.level = stoi(line);
-
-            switch (record.level) {
-                case 1:
-                    begginerScores.push_back(record);
-                break;
-                case 2:
-                    intermediateScores.push_back(record);
-                break;
-                case 3:
-                    advancedScores.push_back(record);
-                break;
-            }
+            rankings[record.level - 1].push_back(record);
         }
-
-        sort(begginerScores.begin(), begginerScores.end(), compareTwoRecords);
-        sort(intermediateScores.begin(), intermediateScores.end(), compareTwoRecords);
-        sort(advancedScores.begin(), advancedScores.end(), compareTwoRecords);
-
-        printRanking(begginerScores);
-        printRanking(intermediateScores);
-        printRanking(advancedScores);
+        for (int i = 0; i < NUMBER_OF_LEVELS; i++) printRanking(rankings[i]);
     }
 
     cout << endl << "ESC - powrót do menu";

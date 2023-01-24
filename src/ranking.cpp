@@ -13,18 +13,18 @@
 
 using namespace std;
 
-struct RankingData {
+struct RankingRecord {
     string name;
     unsigned int time;
     unsigned int level;
 };
 
 //function which allows sort function to sort data by struct parameter
-bool compareTwoRecords(RankingData a, RankingData b) {
+bool compareTwoRecords(RankingRecord a, RankingRecord b) {
     return a.time < b.time;
 }
 
-void printRanking(vector<RankingData> ranking) {
+void printRanking(vector<RankingRecord> ranking) {
     sort(ranking.begin(), ranking.end(), compareTwoRecords);
 
     switch(ranking[0].level) {
@@ -51,42 +51,35 @@ void ranking () {
     system("cls");
     clearConsole();
 
-    ifstream file("ranking.txt");
-    string line;
+    fstream file("ranking.txt", ios::in);
+    string word;
 
-    vector <RankingData> rankings[NUMBER_OF_LEVELS];
+    vector <RankingRecord> rankings[NUMBER_OF_LEVELS];
     
     printBigString("Ranking", 26);
 
     if (file.good()) {
+        int wordNumber = 0;
+        RankingRecord record;
+
         while(!file.eof()) {
-            getline(file,line);
-
-            RankingData record;
-            size_t pos = 0;
-            string space_delimiter = " ";
-            int wordNumber = 0;
-
-            while((pos = line.find(space_delimiter)) != string::npos) {
-                string text = line.substr(0, pos);
-
-                switch (wordNumber) {
-                    case 0:
-                        record.name = text;
-                    break;
-                    case 1:
-                        record.time = stoi(text);
-                    break;
-                }
-
-                wordNumber++;
-                line.erase(0, pos+space_delimiter.length());
+            file >> word;
+            switch (wordNumber % 3) {
+                case 0:
+                    record.name = word; 
+                break;
+                case 1:
+                    record.time = stoi(word);
+                break;
+                case 2:
+                    record.level = stoi(word);
+                    rankings[record.level - 1].push_back(record);
+                break;
             }
-
-            record.level = stoi(line);
-            rankings[record.level - 1].push_back(record);
+            wordNumber++;
         }
         for (int i = 0; i < NUMBER_OF_LEVELS; i++) printRanking(rankings[i]);
+        file.close();
     }
 
     cout << endl << "ESC - powrót do menu";

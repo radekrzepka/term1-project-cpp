@@ -124,9 +124,7 @@ void generateBomb (Field **board, int boardWidth, int boardHeight, int mineQuant
 
     while (generatedBomb != mineQuantity) {
         bool closeToFirstMove = false;
-        MoveCords randomCords;
-        randomCords.rowCords = generateRandomCord(boardHeight - 1);
-        randomCords.colCords = generateRandomCord(boardWidth - 1);
+        MoveCords randomCords{generateRandomCord(boardHeight - 1), generateRandomCord(boardWidth - 1)};
 
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
@@ -172,9 +170,7 @@ void revealFields (Field **board, int boardWidth, int boardHeight, MoveCords use
 
     for (int i = -1; i <= 1; i++) {
         for (int j = -1; j <= 1; j++) {
-            MoveCords newCord;
-            newCord.rowCords = userMove.rowCords + i;
-            newCord.colCords = userMove.colCords + j;
+            MoveCords newCord{userMove.rowCords + i, userMove.colCords + j};
             
             if (correctCords(newCord.rowCords, newCord.colCords, boardWidth, boardHeight)) {
                 if (board[newCord.rowCords][newCord.colCords].howManyBombsNear == 0 && !board[newCord.rowCords][newCord.colCords].hasBomb && !board[newCord.rowCords][newCord.colCords].isRevaled) {
